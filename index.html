@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <title>XO</title>
+        <style>
+            #board {
+                display: flex;
+                width: 300px;
+                height: 300px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+
+            .box {
+                width: 100px;
+                height: 100px;
+                box-sizing: border-box;
+                border: 5px solid #000;
+                font-size: 5em;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .box:hover {
+                background: lightblue;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="render"></div>
+        <script>
+            const gameState = {
+                p1: 'X',
+                p2: 'O',
+                currP: 'X',
+                board: ['','','','','','','','',''],
+            }
+
+            let render = state => document.getElementById('render').innerHTML = `<div id="board">${gameState.board.map((x,i)=>`<div class="box" data-id="${i}">${x}</div>`).join('')}</div>`
+            let check = ({currP, board}) => [[0,1,2],[0,4,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[3,4,5],[6,7,8]].find(s=> board[s[0]] === currP && board[s[0]] == board[s[1]] && board[s[0]] == board[s[2]])
+            
+            render(gameState);
+            
+            document.getElementById('render').addEventListener('click',e=>{
+                let box = e.target.dataset['id']
+
+                if(gameState.board[box] !== '') return
+                gameState.board[box] = gameState.currP;
+
+                render(gameState)
+
+                if(check(gameState)){
+                    alert(`Congratulations. '${gameState.currP}' has won the game`)
+                    gameState.currP= 'X'
+                    gameState.board= ['','','','','','','','','']
+                    render(gameState)
+                }else if(!(gameState.board.filter(x=>x=='').length)){
+                    alert(`Draw`)
+                    gameState.currP= 'X'
+                    gameState.board= ['','','','','','','','','']
+                    render(gameState)
+                }else{
+                    gameState.currP = gameState.currP == gameState.p1 ? gameState.p2 : gameState.p1;
+                }
+            })
+
+        </script>
+    </body>
+</html>
