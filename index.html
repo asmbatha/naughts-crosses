@@ -1,29 +1,40 @@
 <html>
     <head>
-        <title>XO</title>
+        <title>Naughts and Crosses</title>
         <style>
-            #board {
+            html, body {
                 display: flex;
-                width: 300px;
-                height: 300px;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: flex-start;
+                justify-content: center;
+                align-items: center;
+                padding: 0; margin: 0;
+                background: #34495e;
+            }
+            #board {
+                width: 310px;
+                height: 310px; 
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-column-gap: 5px;
+                grid-row-gap: 5px;
+                margin: auto;
+                background: #2c3e50;
             }
 
             .box {
                 width: 100px;
-                height: 100px;
-                box-sizing: border-box;
-                border: 5px solid #000;
+                height: 100px; 
                 font-size: 5em;
                 display: flex;
+                background: #34495e;
                 justify-content: center;
                 align-items: center;
+                color: #95a5a6;
+                cursor: default;
             }
 
-            .box:hover {
-                background: lightblue;
+            .box:empty:hover {
+                filter: brightness(1.1);
+                cursor: hand;
             }
         </style>
     </head>
@@ -43,26 +54,26 @@
             render(gameState);
             
             document.getElementById('render').addEventListener('click',e=>{
-                let box = e.target.dataset['id']
-
-                if(gameState.board[box] !== '') return
-                gameState.board[box] = gameState.currP;
+                if(gameState.board[e.target.dataset['id']] !== '') return
+                gameState.board[e.target.dataset['id']] = gameState.currP;
 
                 render(gameState)
 
-                if(check(gameState)){
-                    alert(`Congratulations. '${gameState.currP}' has won the game`)
-                    gameState.currP= 'X'
-                    gameState.board= ['','','','','','','','','']
-                    render(gameState)
-                }else if(!(gameState.board.filter(x=>x=='').length)){
-                    alert(`Draw`)
-                    gameState.currP= 'X'
-                    gameState.board= ['','','','','','','','','']
-                    render(gameState)
-                }else{
-                    gameState.currP = gameState.currP == gameState.p1 ? gameState.p2 : gameState.p1;
-                }
+                setTimeout(() => { // force redraw, it just feels better. alternative is to use mousdown and mouseup
+                    if(check(gameState)){
+                        alert(`Congratulations. '${gameState.currP}' has won the game`)
+                        gameState.currP= 'X'
+                        gameState.board= ['','','','','','','','','']
+                        render(gameState)
+                    }else if(!(gameState.board.filter(x=>x=='').length)){
+                        alert(`Draw`)
+                        gameState.currP= 'X'
+                        gameState.board= ['','','','','','','','','']
+                        render(gameState)
+                    }else{
+                        gameState.currP = gameState.currP == gameState.p1 ? gameState.p2 : gameState.p1;
+                    }
+                },0);
             })
 
         </script>
